@@ -38,23 +38,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         [self setNeedsStatusBarAppearanceUpdate];
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
-    
+
     self.view.backgroundColor = [UIColor blackColor];
-    
+
     CGRect bounds = self.view.bounds;
-    
+
     _zodiacInfoWebView = [[UIWebView alloc] initWithFrame:(CGRect){{0, 0}, {bounds.size.width,bounds.size.height - 44}}];
     _zodiacInfoWebView.backgroundColor = [UIColor clearColor];
     _zodiacInfoWebView.opaque = NO;
     [self.view addSubview:_zodiacInfoWebView];
-    
-    [self performSelector:@selector(initInterstitial) withObject:nil afterDelay:7];
-    
+
+    [self performSelector:@selector(initInterstitial) withObject:nil afterDelay:4];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -85,17 +85,17 @@
 - (void)setLink:(NSString *)linkURL
 {
     _linkURL = linkURL;
-    
+
     _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
+
     _hud.labelText = @"下載中";
-    
+
     if (_type == 1) {
         [[WebdataParser sharedParser]htmlParserForDailyHoroscope:linkURL Completion:^(id result) {
-                        
+
             [_zodiacInfoWebView loadHTMLString:result baseURL:nil];
             [_hud hide:YES];
-            
+
         } failure:^(NSError *error) {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"网络好像不给力..."
                                                                 message:[error localizedDescription]
@@ -105,7 +105,7 @@
             [alertView show];
         }];
     }
-    
+
     else {
         [[WebdataParser sharedParser] htmlParserForWeeklyOrMonthlyHoroscope:linkURL page:1 initialStr:@"" Completion:^(id result) {
             [_zodiacInfoWebView loadHTMLString:result baseURL:nil];
@@ -134,18 +134,18 @@
                     adType:AdViewTypeFullScreen
                     adMoGoViewDelegate:self];
     interstitial.adWebBrowswerDelegate = self;
-    
+
 }
 
 #pragma mark - AdMoGoInterstitialDelegate
 - (void)adsMoGoInterstitialAdDidStart{
     NSLog(@"MOGO Full Screen Start");
-    
+
 }
 
 - (void)adsMoGoInterstitialAdIsReady{
     NSLog(@"MOGO Full Screen IsReady");
-    
+
 }
 
 - (void)adsMoGoInterstitialAdReceivedRequest{
